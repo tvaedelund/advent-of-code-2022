@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using AdventOfCode.Helpers;
 
 var day = "Day02";
@@ -20,5 +21,10 @@ if (input.EndsWith("\r\n"))
     input = input.Substring(0, input.Length - 2);
 }
 
+var sw = Stopwatch.StartNew();
+
 Console.WriteLine($"PartOne: {solution.PartOne(input)}");
+Console.WriteLine($"TimeOne: {sw.ElapsedMilliseconds}ms");
+
 Console.WriteLine($"PartTwo: {solution.PartTwo(input)}");
+Console.WriteLine($"TimeTwo: {sw.ElapsedMilliseconds}ms");
