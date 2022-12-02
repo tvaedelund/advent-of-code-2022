@@ -2,6 +2,8 @@
 using AdventOfCode.Helpers;
 
 var day = "Day02";
+var isTest = false;
+var fileName = isTest ? @$"days\{day}\input-test.txt" : @$"days\{day}\input.txt";
 
 Console.WriteLine($"Advent of Code 2022: {day}");
 
@@ -11,7 +13,7 @@ var solvers = from t in Assembly.GetExecutingAssembly().GetTypes()
                 select Activator.CreateInstance(t) as ISolver;
 
 var solution = solvers.First(x => x.ToString()!.Contains(day));
-var input = File.ReadAllText(@$"days\{day}\input.txt");
+var input = File.ReadAllText(fileName);
 
 if (input.EndsWith("\r\n"))
 {
