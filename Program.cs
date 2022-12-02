@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using AdventOfCode.Helpers;
 
-var day = "Day01";
+var day = "Day02";
 
 Console.WriteLine($"Advent of Code 2022: {day}");
 
