@@ -26,5 +26,7 @@ var sw = Stopwatch.StartNew();
 Console.WriteLine($"PartOne: {solution.PartOne(input)}");
 Console.WriteLine($"TimeOne: {sw.ElapsedMilliseconds}ms");
 
+sw.Restart();
+
 Console.WriteLine($"PartTwo: {solution.PartTwo(input)}");
 Console.WriteLine($"TimeTwo: {sw.ElapsedMilliseconds}ms");

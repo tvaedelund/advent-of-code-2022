@@ -10,29 +10,11 @@ public class Solution : ISolver
 
     private IEnumerable<int> GetPriorities(string input)
     {
-        var rucksacks = from rucksack in input.Split("\r\n")
-                        let compartments = (rucksack[..(rucksack.Length / 2)], rucksack[(rucksack.Length / 2)..])
-                        select compartments;
-
-        var commonItemTypes = from rucksack in rucksacks
-                              let common = GetCommonItemTypes(rucksack)
-                              select common.Distinct();
-
-        var priorities = from type in commonItemTypes.SelectMany(x => x)
-                         let priority = type - 96 < 0 ? type - 38 : type - 96
-                         select priority;
-
-        return priorities;
-    }
-
-    private IEnumerable<char> GetCommonItemTypes((string, string) rucksack)
-    {
-        foreach (var item in rucksack.Item1)
-        {
-            if (rucksack.Item2.Any(x => x == item))
-            {
-                yield return item;
-            }
-        }
+        return from rucksack in input.Split("\r\n")
+               let compartments = (rucksack[..(rucksack.Length / 2)], rucksack[(rucksack.Length / 2)..])
+               let common = compartments.Item1.Intersect(compartments.Item2)
+               from type in common
+               let priority = type - 96 < 0 ? type - 38 : type - 96
+               select priority;
     }
 }
