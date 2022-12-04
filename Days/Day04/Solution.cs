@@ -11,14 +11,12 @@ public class Solution : ISolver
     private IEnumerable<bool> GetOverlaps(string input) =>
         from row in input.Split("\r\n")
         let pairs = (row.Split(',')[0].Split('-').Select(int.Parse).ToList(), row.Split(',')[1].Split('-').Select(int.Parse).ToList())
-        let ranges = (Enumerable.Range(pairs.Item1[0], pairs.Item1[1] - pairs.Item1[0] + 1), Enumerable.Range(pairs.Item2[0], pairs.Item2[1] - pairs.Item2[0] + 1))
-        let overlaps = ranges.Item1.Intersect(ranges.Item2).Count() == ranges.Item1.Count() || ranges.Item2.Intersect(ranges.Item1).Count() == ranges.Item2.Count()
+        let overlaps = (pairs.Item1[0] >= pairs.Item2[0] && pairs.Item1[1] <= pairs.Item2[1]) || (pairs.Item2[0] >= pairs.Item1[0] && pairs.Item2[1] <= pairs.Item1[1])
         select overlaps;
 
     private IEnumerable<bool> GetPartialOverlaps(string input) =>
         from row in input.Split("\r\n")
         let pairs = (row.Split(',')[0].Split('-').Select(int.Parse).ToList(), row.Split(',')[1].Split('-').Select(int.Parse).ToList())
-        let ranges = (Enumerable.Range(pairs.Item1[0], pairs.Item1[1] - pairs.Item1[0] + 1), Enumerable.Range(pairs.Item2[0], pairs.Item2[1] - pairs.Item2[0] + 1))
-        let overlaps = ranges.Item1.Intersect(ranges.Item2).Count() > 0 || ranges.Item2.Intersect(ranges.Item1).Count() > 0
+        let overlaps = (pairs.Item1[1] >= pairs.Item2[0] && pairs.Item1[0] <= pairs.Item2[1]) || (pairs.Item2[1] >= pairs.Item1[0] && pairs.Item2[0] <= pairs.Item1[1])
         select overlaps;
 }
