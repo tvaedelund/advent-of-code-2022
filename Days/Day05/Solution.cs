@@ -11,69 +11,55 @@ public class Solution : ISolver
 
     private string GetTopmostCrates(string input, bool isPartTwo = false)
     {
-        var stacks = ParseStacks(input);
-        var rows = input.Split("\r\n");
-        foreach (var row in rows.SkipWhile(r => !string.IsNullOrWhiteSpace(r)).Skip(1))
+        var parts = input.Split("\r\n\r\n");
+        var rows = parts[1].Split("\r\n");
+        var stacks = ParseStacks(parts[0].Split("\r\n"));
+        foreach (var row in rows)
         {
             var pattern = @"move (\d+) from (\d+) to (\d+)";
-            var matches = Regex.Matches(row, pattern);
-            var command = (int.Parse(matches[0].Groups[1].Value), int.Parse(matches[0].Groups[2].Value), int.Parse(matches[0].Groups[3].Value));
-            stacks = isPartTwo ? ExecuteCommand9001(stacks, command) : ExecuteCommand(stacks, command);
+            var match = Regex.Match(row, pattern);
+            var command = (int.Parse(match.Groups[1].Value), int.Parse(match.Groups[2].Value) - 1, int.Parse(match.Groups[3].Value) - 1);
+            if (isPartTwo)
+            {
+                ExecuteCommand9001(stacks[command.Item2], stacks[command.Item3], command.Item1);
+            }
+            else
+            {
+                ExecuteCommand9000(stacks[command.Item2], stacks[command.Item3], command.Item1);
+            }
         }
         
         return string.Join("", stacks.Select(x => x.Peek()));
     }
 
-    private List<Stack<char>> ExecuteCommand9001(List<Stack<char>> stacks, (int count, int from, int to) command)
+    private void ExecuteCommand9001(Stack<char> source, Stack<char> target, int count)
     {
-        var cratesToMove = new List<char>();
-        for (int i = 0; i < command.count; i++)
-        {
-            cratesToMove.Add(stacks[command.from - 1].Pop());
-        }
-
-        cratesToMove.Reverse();
-
-        foreach (var crate in cratesToMove)
-        {
-            stacks[command.to - 1].Push(crate);
-        }
-
-        return stacks;
+        var temporary = new Stack<char>();
+        ExecuteCommand9000(source, temporary, count);
+        ExecuteCommand9000(temporary, target, count);
     }
 
-    private List<Stack<char>> ExecuteCommand(List<Stack<char>> stacks, (int count, int from, int to) command)
+    private void ExecuteCommand9000(Stack<char> source, Stack<char> target, int count)
     {
-        for (int i = 0; i < command.count; i++)
+        for (int i = 0; i < count; i++)
         {
-            var crateToMove = stacks[command.from - 1].Pop();
-            stacks[command.to - 1].Push(crateToMove);
+            target.Push(source.Pop());
         }
-
-        return stacks;
     }
 
-    private List<Stack<char>> ParseStacks(string input)
+    private List<Stack<char>> ParseStacks(string[] rows)
     {
-        var rows = input.Split("\r\n");
-        var stacks = new List<Stack<char>>();
-    
-        foreach (var row in rows.TakeWhile(x => !string.IsNullOrWhiteSpace(x)).Reverse().Skip(1))
+        var stacks = rows.Last().Chunk(4).Select(c => new Stack<char>()).ToList();
+   
+        foreach (var row in rows.Reverse().Skip(1))
         {
-            var crates = row.Select((x, i) => (x, i)).GroupBy(x => x.i / 4).Select(x => x.ToList()).ToList();
+            var crates = row.Chunk(4).ToList();
             for (int i = 0; i < crates.Count; i++)
             {
-                if (stacks.Count < i + 1)
+                if (crates[i][1] != ' ')
                 {
-                    stacks.Add(new Stack<char>());
+                    stacks[i].Push(crates[i][1]);
                 }
-                
-                if (crates[i][1].x == ' ')
-                {
-                    continue;
-                }
-
-                stacks[i].Push(crates[i][1].x);
             }
         }
 

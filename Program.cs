@@ -22,11 +22,11 @@ if (input.EndsWith("\r\n"))
 }
 
 var sw = Stopwatch.StartNew();
+var partOne = solution.PartOne(input);
+var partTwo = solution.PartTwo(input);
+sw.Stop();
 
-Console.WriteLine($"PartOne: {solution.PartOne(input)}");
-Console.WriteLine($"TimeOne: {sw.ElapsedMilliseconds}ms");
+Console.WriteLine($"PartOne: {partOne}");
+Console.WriteLine($"PartTwo: {partTwo}");
 
-sw.Restart();
-
-Console.WriteLine($"PartTwo: {solution.PartTwo(input)}");
-Console.WriteLine($"TimeTwo: {sw.ElapsedMilliseconds}ms");
+Console.WriteLine($"Time: {sw.ElapsedMilliseconds}ms");
