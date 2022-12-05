@@ -17,6 +17,6 @@ public class Solution : ISolver
     private IEnumerable<bool> GetPartialOverlaps(string input) =>
         from row in input.Split("\r\n")
         let pairs = (row.Split(',')[0].Split('-').Select(int.Parse).ToList(), row.Split(',')[1].Split('-').Select(int.Parse).ToList())
-        let overlaps = (pairs.Item1[1] >= pairs.Item2[0] && pairs.Item1[0] <= pairs.Item2[1]) || (pairs.Item2[1] >= pairs.Item1[0] && pairs.Item2[0] <= pairs.Item1[1])
+        let overlaps = Math.Max(pairs.Item1[0], pairs.Item2[0]) <= Math.Min(pairs.Item1[1], pairs.Item2[1])
         select overlaps;
 }
