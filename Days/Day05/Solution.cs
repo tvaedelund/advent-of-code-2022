@@ -18,25 +18,18 @@ public class Solution : ISolver
         {
             var pattern = @"move (\d+) from (\d+) to (\d+)";
             var match = Regex.Match(row, pattern);
-            var command = (int.Parse(match.Groups[1].Value), int.Parse(match.Groups[2].Value) - 1, int.Parse(match.Groups[3].Value) - 1);
+            var command = (count: int.Parse(match.Groups[1].Value), source: int.Parse(match.Groups[2].Value) - 1, target: int.Parse(match.Groups[3].Value) - 1);
             if (isPartTwo)
             {
-                ExecuteCommand9001(stacks[command.Item2], stacks[command.Item3], command.Item1);
+                ExecuteCommand9001(stacks[command.source], stacks[command.target], command.count);
             }
             else
             {
-                ExecuteCommand9000(stacks[command.Item2], stacks[command.Item3], command.Item1);
+                ExecuteCommand9000(stacks[command.source], stacks[command.target], command.count);
             }
         }
         
         return string.Join("", stacks.Select(x => x.Peek()));
-    }
-
-    private void ExecuteCommand9001(Stack<char> source, Stack<char> target, int count)
-    {
-        var temporary = new Stack<char>();
-        ExecuteCommand9000(source, temporary, count);
-        ExecuteCommand9000(temporary, target, count);
     }
 
     private void ExecuteCommand9000(Stack<char> source, Stack<char> target, int count)
@@ -45,6 +38,13 @@ public class Solution : ISolver
         {
             target.Push(source.Pop());
         }
+    }
+
+    private void ExecuteCommand9001(Stack<char> source, Stack<char> target, int count)
+    {
+        var temporary = new Stack<char>();
+        ExecuteCommand9000(source, temporary, count);
+        ExecuteCommand9000(temporary, target, count);
     }
 
     private List<Stack<char>> ParseStacks(string[] rows)
