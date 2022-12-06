@@ -13,6 +13,9 @@ public class Solution : ISolver
 
     private int GetPositionOfPacket(string input, int length)
     {
-        return input.Select((c, i) => (((i + length < input.Length ? input[i..(i + length)] : "").Distinct().Count() == length), i + length)).First(x => x.Item1).Item2;
+        // Sliding window of size 'length'
+        // Check length of each distinct window, match = True, else False
+        // Select first window that is True and its Index
+        return input.Select((c, i) => (window: ((i + length < input.Length ? input[i..(i + length)] : "").Distinct().Count() == length), index: i + length)).First(x => x.window).index;
     }
 }
