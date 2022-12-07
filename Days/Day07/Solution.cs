@@ -5,44 +5,52 @@ namespace AdventOfCode2022.Days.Day07;
 
 public class Solution : ISolver
 {
-    public object PartOne(string input) => GetSize(input);
+    // < 18929272 (to high)
+    // > 1680 (to low)
+    // > 3487907 (to low)
 
-    public object PartTwo(string input) => 0;
+    Dictionary<string, int> fileSystem = new();
 
-    int GetSize(string input)
+    public object PartOne(string input) => GetFileSystem(input)
+        .Where(x => x.Value <= 100000)
+        .Sum(x => x.Value);
+
+    public object PartTwo(string input) => GetFileSystem(input)
+        .Where(x => x.Value >= (GetFileSystem(input).Max(x => x.Value) - 40000000))
+        .OrderBy(x => x.Value)
+        .First().Value;
+
+    Dictionary<string, int> GetFileSystem(string input)
     {
-        return GetStructure(input).Where(x => x.Value <= 100000).Sum(x => x.Value);
-    }
-
-    Dictionary<string, int> GetStructure(string input)
-    {
-        var result = new Dictionary<string, int>();
-        var currentPath = "/";
-
-        foreach (var row in input.Split("\r\n").Skip(1))
+        if (!fileSystem.Any())
         {
-            var test = row.Split(' ');
-            if (test is [_, _, var path])
+            var currentPath = "/";
+
+            foreach (var row in input.Split("\r\n").Skip(1))
             {
-                if (path == "..")
+                var test = row.Split(' ');
+                if (test is [_, _, var path])
                 {
-                    currentPath = string.Join("/", currentPath.Split('/').SkipLast(1));
+                    if (path == "..")
+                    {
+                        currentPath = string.Join("/", currentPath.Split('/').SkipLast(1));
+                    }
+                    else
+                    {
+                        currentPath = $"{currentPath}/{path}";
+                    }
                 }
                 else
                 {
-                    currentPath = $"{currentPath}/{path}";
-                }
-            }
-            else
-            {
-                if (test[0] is not "dir" and not "$")
-                {
-                    AddSizes(result, currentPath, int.Parse(test[0]));
+                    if (test[0] is not "dir" and not "$")
+                    {
+                        AddSizes(fileSystem, currentPath, int.Parse(test[0]));
+                    }
                 }
             }
         }
 
-        return result;
+        return fileSystem;
     }
 
     void AddSizes(Dictionary<string, int> structure, string path, int size)
@@ -61,5 +69,5 @@ public class Solution : ISolver
                 structure[pathItem] = size;
             }
         }
-    } 
+    }
 }
