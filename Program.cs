@@ -2,7 +2,7 @@
 using System.Reflection;
 using AdventOfCode.Helpers;
 
-var day = "Day07";
+var day = "Day08";
 var isTest = false;
 var fileName = isTest ? @$"days\{day}\input-test.txt" : @$"days\{day}\input.txt";
 
