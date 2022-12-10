@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.RegularExpressions;
 using AdventOfCode.Helpers;
 
@@ -9,9 +10,9 @@ public class Solution : ISolver
 
     public object PartTwo(string input)
     {
-        var a = GetSignals(input);
-        PrintScreen(a);
-        return 0;
+        var pixels = GetSignals(input);
+        var screen = PrintScreen(pixels);
+        return $"\r\n{screen}";
     }
 
     record Cycle(int X, int cycle, char pixel);
@@ -43,17 +44,20 @@ public class Solution : ISolver
         return (pos >= (X - 1) && pos <= (X + 1)) ? '#' : '.';
     }
 
-    private void PrintScreen(IEnumerable<Cycle> cycles)
+    private string PrintScreen(IEnumerable<Cycle> cycles)
     {
+        var sb = new StringBuilder();
         var rows = cycles.Chunk(40);
         foreach (var row in rows)
         {
             for (int i = 0; i < row.Length; i++)
             {
-                Console.Write(row[i].pixel);
+                sb.Append(row[i].pixel);
             }
 
-            Console.WriteLine();
+            sb.AppendLine();
         }
+
+        return sb.ToString();
     }
 }
