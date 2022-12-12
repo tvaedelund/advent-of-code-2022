@@ -6,19 +6,35 @@ public class Solution : ISolver
 {
     public object PartOne(string input)
     {
-        return GetShortesRoute(GetMap(input));
+        var (map, startPos, endPos) = Init(input);
+
+        return GetShortesRoute(map, startPos, endPos);
     }
 
-    public object PartTwo(string input) => 0;
-
-    int GetShortesRoute(Dictionary<Pos, int> map)
+    public object PartTwo(string input)
     {
+        var (map, startPos, endPos) = Init(input);
+        var paths = map.Where(m => m.Value == 'a')
+            .Select(m => m.Key)
+            .Select(sp => GetShortesRoute(map, sp, endPos));
+
+        return paths.Min();
+    }
+
+    (Dictionary<Pos, int> map, Pos startPos, Pos endPos) Init(string input)
+    {
+        var map = GetMap(input);
         var startPos = map.Single(m => m.Value == 'S').Key;
         var endPos = map.Single(m => m.Value == 'E').Key;
 
         map[startPos] = 'a';
         map[endPos] = 'z';
 
+        return (map, startPos, endPos);
+    }
+
+    int GetShortesRoute(Dictionary<Pos, int> map, Pos startPos, Pos endPos)
+    {
         var pathLength = new Dictionary<Pos, int>();
         pathLength[startPos] = 0;
 
@@ -27,6 +43,12 @@ public class Solution : ISolver
 
         while (true)
         {
+            if (pq.Count == 0)
+            {
+                // Invalid path = path does not reach E
+                return int.MaxValue;
+            }
+
             var current = pq.Dequeue();
             if (current == endPos)
             {
