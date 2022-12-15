@@ -11,11 +11,14 @@ public class Solution : ISolver
     int Solve(string input, int yLevel)
     {
         var readings = from line in input.Split("\r\n")
-                       let rx1 = Regex.Match(line, @"Sensor at x=(-?\d+), y=(-?\d+): closest beacon is at x=(-?\d+), y=(-?\d+)").Groups
-                       let rx2 = new Reading(new Pos(int.Parse(rx1[1].Value), int.Parse(rx1[2].Value)), new Pos(int.Parse(rx1[3].Value), int.Parse(rx1[4].Value)), yLevel)
-                       select rx2;
+                       let groups = Regex.Match(line, @"Sensor at x=(-?\d+), y=(-?\d+): closest beacon is at x=(-?\d+), y=(-?\d+)").Groups
+                       let reading = new Reading(new Pos(int.Parse(groups[1].Value), int.Parse(groups[2].Value)), new Pos(int.Parse(groups[3].Value), int.Parse(groups[4].Value)), yLevel)
+                       select reading;
 
-        var readingsCoveringRow = readings.Where(reading => reading.CoverageOfRow > 0).SelectMany(reading => reading.Coverage).Distinct();
+        var readingsCoveringRow = readings.Where(reading => reading.CoverageOfRow > 0)
+            .SelectMany(reading => reading.Coverage)
+            .Distinct()
+            .ToList();
 
         return Math.Abs(readingsCoveringRow.Min(pos => pos.x)) + Math.Abs(readingsCoveringRow.Max(pos => pos.x));
     }
