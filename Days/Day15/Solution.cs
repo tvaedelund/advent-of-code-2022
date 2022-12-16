@@ -15,12 +15,7 @@ public class Solution : ISolver
                        let reading = new Reading(new Pos(int.Parse(groups[1].Value), int.Parse(groups[2].Value)), new Pos(int.Parse(groups[3].Value), int.Parse(groups[4].Value)), yLevel)
                        select reading;
 
-        var readingsCoveringRow = readings.Where(reading => reading.CoverageOfRow > 0)
-            .SelectMany(reading => reading.Coverage)
-            .Distinct()
-            .ToList();
-
-        return Math.Abs(readingsCoveringRow.Min(pos => pos.x)) + Math.Abs(readingsCoveringRow.Max(pos => pos.x));
+        return Math.Abs(readings.Min(r => r.minX)) + Math.Abs(readings.Max(r => r.maxX));
     }
 
     record Pos(int x, int y);
@@ -30,8 +25,7 @@ public class Solution : ISolver
         public int DistanceBetween => Math.Abs(sensor.x - beacon.x) + Math.Abs(sensor.y - beacon.y);
         public int DistanceToRow => Math.Abs(sensor.y - yLevel);
         public int CoverageOfRow => (DistanceBetween * 2 + 1) - DistanceToRow * 2;
-
-        public IEnumerable<Pos> Coverage => Enumerable.Range(sensor.x - CoverageOfRow / 2, CoverageOfRow)
-            .Select(x => new Pos(x, sensor.y));
+        public int minX => sensor.x - CoverageOfRow / 2;
+        public int maxX => sensor.x + CoverageOfRow / 2;
     }
 }

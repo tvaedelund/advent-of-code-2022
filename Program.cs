@@ -2,8 +2,8 @@
 using System.Reflection;
 using AdventOfCode.Helpers;
 
-var day = "Day16";
-var isTest = true;
+var day = "Day15";
+var isTest = false;
 var fileName = isTest ? @$"days\{day}\input-test.txt" : @$"days\{day}\input.txt";
 
 Console.WriteLine($"Advent of Code 2022: {day}");
